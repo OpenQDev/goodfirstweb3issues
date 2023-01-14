@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function Project() {
+export default function ProjectCard(props: any) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -17,10 +17,10 @@ export default function Project() {
         }
       </h2>
       <p className="mt-2 mb-1">Bash scripts for booting the full backend across local and test environments</p>
-      <p className="flex justify-between text-gray-600">
+      <p className="flex space-x-3 text-gray-600">
         <span>Lang: JavaScript</span>
         <span>Stars: 0</span>
-        <span>Last active: 3 days ago</span>
+        <span className="grow text-right">Last active: 3 days ago</span>
       </p>
       <div className={isOpen ? "mt-4" : "hidden"}>
         <div>Issue 1</div>

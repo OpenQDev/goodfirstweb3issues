@@ -1,11 +1,26 @@
+import { db } from "../lib/db";
+import { Project } from "../react-app-env";
+
 export default function TheSidebar() {
+  function addProject() {
+    const project: Project = {
+      owner: 'mktcode',
+      name: 'deepest-dungeon',
+      description: 'A dungeon crawler game',
+      language: 'JavaScript',
+      lastUpdated: new Date().getTime(),
+    }
+
+    db.get('projects').get('mkt/deepest-dungeon').put(project)
+  }
+
   return (
     <aside className="p-4 lg:max-w-sm">
       <h3>About</h3>
       <p className="mt-2">
         This is a Web3 version of <a href="https://goodfirstissue.dev/" target="_blank" rel="noreferrer">goodfirstissue.dev</a>, with a focus on Web3 projects.
       </p>
-      <h3 className="mt-4">Popular languages</h3>
+      <h3 className="mt-9">Popular languages</h3>
       <div className="flex flex-wrap mt-3 gap-2">
         {
           ["JavaScript", "TypeScript", "Python", "Java", "C++", "C#", "PHP", "Ruby", "Go", "Rust"].map((lang) => (
@@ -16,8 +31,9 @@ export default function TheSidebar() {
           ))
         }
       </div>
-      <button className="w-full mt-5">
-        Add your project
+      <input type="text" className="w-full mt-10 rounded-b-none" placeholder="GitHub username/repo" />
+      <button onClick={addProject} className="w-full rounded-t-none">
+        Add project
       </button>
       <p className="text-gray-600 text-center mt-5">
         An <a href="https://openq.dev" target="_blank" rel="noreferrer">OpenQ</a> initiative
