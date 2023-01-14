@@ -2,8 +2,8 @@ export default function TheSidebar() {
   return (
     <aside className="p-4 lg:max-w-sm">
       <h3>About</h3>
-      <p>
-        Good First Issue curates easy pickings from popular open-source projects, and helps you make your first contribution to open-source.
+      <p className="mt-2">
+        This is a Web3 version of <a href="https://goodfirstissue.dev/" target="_blank" rel="noreferrer">goodfirstissue.dev</a>, with a focus on Web3 projects.
       </p>
       <h3 className="mt-4">Popular languages</h3>
       <div className="flex flex-wrap mt-3 gap-2">
@@ -20,7 +20,7 @@ export default function TheSidebar() {
         Add your project
       </button>
       <p className="text-gray-600 text-center mt-5">
-        Made with love by OpenQ
+        An <a href="https://openq.dev" target="_blank" rel="noreferrer">OpenQ</a> initiative
       </p>
     </aside>
   );
