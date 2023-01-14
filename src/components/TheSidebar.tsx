@@ -8,6 +8,7 @@ export default function TheSidebar() {
       name: 'deepest-dungeon',
       description: 'A dungeon crawler game',
       language: 'JavaScript',
+      stars: 0,
       lastUpdated: new Date().getTime(),
     }
 
@@ -35,8 +36,8 @@ export default function TheSidebar() {
       <button onClick={addProject} className="w-full rounded-t-none">
         Add project
       </button>
-      <p className="text-gray-600 text-center mt-5">
-        An <a href="https://openq.dev" target="_blank" rel="noreferrer">OpenQ</a> initiative
+      <p className="text-gray-600 text-center mt-16 opacity-50">
+        an <a href="https://openq.dev" target="_blank" rel="noreferrer">OpenQ</a> initiative
       </p>
     </aside>
   );

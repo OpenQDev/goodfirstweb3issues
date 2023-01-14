@@ -2,7 +2,7 @@ import TheHeader from "./components/TheHeader";
 import TheSidebar from "./components/TheSidebar";
 import TheList from "./components/TheList";
 
-function App() {
+export default function App() {
   return (
     <>
       <TheHeader />
@@ -13,5 +13,3 @@ function App() {
     </>
   );
 }
-
-export default App;
