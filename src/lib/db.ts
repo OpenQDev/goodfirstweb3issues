@@ -20,7 +20,7 @@ export function updateRepo(ownerAndRepo: string) {
       db.get('repos').get(ownerAndRepo).put({
         owner: repo.data.owner.login,
         name: repo.data.name,
-        desciption: repo.data.description,
+        description: repo.data.description,
         stars: repo.data.stargazers_count,
         language: repo.data.language,
         lastActive: repo.data.pushed_at,
@@ -29,9 +29,10 @@ export function updateRepo(ownerAndRepo: string) {
         issues.data.forEach((issue: any) => {
           db.get('repos').get(ownerAndRepo).get('issues').get(issue.number).put({
             title: issue.title,
+            number: issue.number,
             body: issue.body,
             createdAt: issue.created_at,
-            assignee: issue.assignee?.login,
+            assignee: issue.assignee?.login || '',
           })
         })
       })
