@@ -1,19 +1,8 @@
-import { db } from "../lib/db";
-import { Project } from "../react-app-env";
+import { useState } from "react";
+import { updateRepo } from "../lib/db";
 
 export default function TheSidebar() {
-  function addProject() {
-    const project: Project = {
-      owner: 'mktcode',
-      name: 'deepest-dungeon',
-      description: 'A dungeon crawler game',
-      language: 'JavaScript',
-      stars: 0,
-      lastUpdated: new Date().getTime(),
-    }
-
-    db.get('projects').get('mkt/deepest-dungeon').put(project)
-  }
+  const [ownerAndRepo, setOwnerAndRepo] = useState('');
 
   return (
     <aside className="p-4 lg:max-w-sm">
@@ -32,9 +21,14 @@ export default function TheSidebar() {
           ))
         }
       </div>
-      <input type="text" className="w-full mt-10 rounded-b-none" placeholder="GitHub username/repo" />
-      <button onClick={addProject} className="w-full rounded-t-none">
-        Add project
+      <input
+        type="text"
+        value={ownerAndRepo} onChange={e => setOwnerAndRepo(e.target.value)}
+        className="w-full mt-10 rounded-b-none"
+        placeholder="GitHub username/repo"
+      />
+      <button onClick={() => updateRepo(ownerAndRepo)} className="w-full rounded-t-none">
+        Add Repository
       </button>
       <p className="text-gray-600 text-center mt-16 opacity-50">
         an <a href="https://openq.dev" target="_blank" rel="noreferrer">OpenQ</a> initiative

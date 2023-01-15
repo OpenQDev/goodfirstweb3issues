@@ -1,24 +1,34 @@
 import { useEffect, useState } from "react";
-import { db } from "../lib/db";
-import { Project } from "../react-app-env";
-import ProjectCard from "./ProjectCard";
+import { db, updateRepo } from "../lib/db";
+import RepoCard from "./RepoCard";
 
 export default function TheList() {
-  const [projects, setProjects] = useState({} as Record<string, Project>);
+  const [repos, setRepos] = useState({} as Record<string, any>);
 
   useEffect(() => {
-    db.get('projects').map().once((project: Project, projectKey: any) => {
-      setProjects((prevProjects: Record<string, Project>) => {
-        return {...prevProjects, [projectKey]: project};
-      });
+    db.get('repos').map().on((repo, repoKey: any) => {
+      if (repo) {
+        if (repo.lastMirrored < Date.now() - 1000 * 60) {
+          updateRepo(repoKey);
+        } else {
+          setRepos((prevRepos: Record<string, any>) => {
+            return {...prevRepos, [repoKey]: repo};
+          });
+        }
+      } else {
+        setRepos((prevRepos: Record<string, any>) => {
+          delete prevRepos[repoKey];
+          return prevRepos;
+        });
+      }
     });
   }, []);
 
   return (
     <main className="p-4 space-y-4 grow">
       {
-        Object.keys(projects).map((projectKey: any) => {
-          return <ProjectCard key={projectKey} project={projects[projectKey]} />
+        Object.keys(repos).map((repoKey: any) => {
+          return <RepoCard key={repoKey} repo={repos[repoKey]} />
         })
       }
     </main>
