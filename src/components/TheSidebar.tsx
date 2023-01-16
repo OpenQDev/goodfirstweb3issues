@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { updateRepo } from "../lib/db";
+import { syncRepoWithGithub } from "../lib/db";
 
 export default function TheSidebar() {
   const [ownerAndRepo, setOwnerAndRepo] = useState('');
@@ -27,7 +27,7 @@ export default function TheSidebar() {
         className="w-full mt-10 rounded-b-none"
         placeholder="GitHub username/repo"
       />
-      <button onClick={() => updateRepo(ownerAndRepo)} className="w-full rounded-t-none">
+      <button onClick={() => syncRepoWithGithub(ownerAndRepo)} className="w-full rounded-t-none">
         Add Repository
       </button>
       <p className="text-gray-600 text-center mt-16 opacity-50">
