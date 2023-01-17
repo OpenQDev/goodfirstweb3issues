@@ -94,3 +94,6 @@ gun.get('repos').map().on((repo: Repo) => {
     });
   }
 })
+
+const randomWhitelistedRepo = reposWhitelist[Math.floor(Math.random() * reposWhitelist.length)];
+syncRepoWithGithub(randomWhitelistedRepo);
