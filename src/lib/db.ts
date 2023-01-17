@@ -42,7 +42,7 @@ class Database extends Dexie {
   constructor() {
     super('database');
     this.version(1).stores({
-      repos: 'id, owner, name, issuesCount',
+      repos: 'id,owner,name,issuesCount',
     });
   }
 }
@@ -75,11 +75,12 @@ export async function syncRepoWithGithub(ownerAndRepo: string) {
     }))),
   }
 
-  gun.get('repos').get(repo.id).put(repo);
+  gun.get(ownerAndRepo).put(repo)
 }
 
-gun.get('repos').map().on((repo: Repo) => {
-  if (reposWhitelist.includes(`${repo.owner}/${repo.name}`)) {
+reposWhitelist.forEach((ownerAndRepo) => {
+  gun.get(ownerAndRepo).on((repo: Repo) => {
+    if (!repo.id) return; // seems to be necessary in brave browser
     db.repos.put({
       id: repo.id,
       owner: repo.owner,
@@ -92,7 +93,7 @@ gun.get('repos').map().on((repo: Repo) => {
       issuesCount: repo.issuesCount,
       issuesJson: repo.issuesJson,
     });
-  }
+  })
 })
 
 const randomWhitelistedRepo = reposWhitelist[Math.floor(Math.random() * reposWhitelist.length)];

@@ -17,7 +17,7 @@ export default function RepoCard(props: { repo: Repo }) {
         <span className="mr-auto">
           {props.repo.owner}/{props.repo.name}
         </span>
-        <span className="text-sm">{issues?.length} issues</span>
+        <span className="text-sm">{props.repo.issuesCount} issues</span>
         <button
           onClick={(e) => {e.stopPropagation(); syncRepoWithGithub(`${props.repo.owner}/${props.repo.name}`)}}
           className="bg-transparent hover:bg-gray-500 text-gray-500 hover:text-gray-800 px-2 py-1 text-sm rounded ml-1"
