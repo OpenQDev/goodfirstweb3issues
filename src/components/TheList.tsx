@@ -1,14 +1,15 @@
-import { useAppSelector } from '../store/hooks'
-import { Repo } from '../store/repos';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from '../lib/db';
 import RepoCard from "./RepoCard";
 
 export default function TheList() {
-  const repos = useAppSelector((state) => state.repos)
-  const reposList = Object.values(repos).map((repo: Repo) => <RepoCard key={repo.id} repo={repo} />)
+  const repos = useLiveQuery(
+    () => db.repos.where('issuesCount').above(0).toArray()
+  );
 
   return (
     <main className="p-4 space-y-4 grow">
-      {reposList}
+      {repos?.map((repo) => <RepoCard key={repo.id} repo={repo} />)}
     </main>
   );
 }

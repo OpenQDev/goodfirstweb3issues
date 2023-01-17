@@ -3,7 +3,9 @@ import 'gun/lib/radix'
 import 'gun/lib/radisk'
 import 'gun/lib/store'
 import 'gun/lib/rindexed'
-import { Octokit } from "octokit";
+import Dexie, { Table } from 'dexie';
+import { Octokit } from 'octokit';
+import reposWhitelist from './reposWhitelist.json';
 
 const gun = new Gun({
   peers: ['http://192.168.178.29:4200/gun'],
@@ -12,35 +14,83 @@ const gun = new Gun({
 
 const octokit = new Octokit();
 
-export const db = gun.get('goodfirstweb3issue')
+export interface Issue {
+  id: string;
+  number: number;
+  title: string;
+  url: string;
+  assignee: string;
+  comments: number;
+}
 
-export function syncRepoWithGithub(ownerAndRepo: string) {
+export interface Repo {
+  id: string;
+  owner: string;
+  name: string;
+  description: string;
+  url: string;
+  language: string;
+  stars: number;
+  lastSynced: number;
+  issuesCount: number;
+  issuesJson: string;
+}
+
+class Database extends Dexie {
+  repos!: Table<Repo>;
+
+  constructor() {
+    super('database');
+    this.version(1).stores({
+      repos: 'id, owner, name, issuesCount',
+    });
+  }
+}
+
+export const db = new Database();
+
+export async function syncRepoWithGithub(ownerAndRepo: string) {
   const [owner, name] = ownerAndRepo.split('/').map((str: string) => str.trim());
 
-  Promise.all([
-    octokit.request("GET /repos/{owner}/{repo}", { owner, repo: name }),
-    octokit.request("GET /repos/{owner}/{repo}/issues", { owner, repo: name, labels: 'good first issue,web3' }),
-  ]).then(([repo, issues]) => {
-    db.get('repos').get(repo.data.node_id).put({
-      id: repo.data.node_id,
-      owner,
-      name,
-      description: repo.data.description || '',
-      stars: repo.data.stargazers_count,
-      language: repo.data.language || '',
-      lastActive: repo.data.pushed_at,
-      lastMirrored: new Date().getTime(),
-      issueIds: issues.data.map((issue) => issue.node_id).join(','),
-    })
+  const githubRepo = await octokit.request("GET /repos/{owner}/{repo}", { owner, repo: name })
+  const githubIssues = await octokit.request("GET /repos/{owner}/{repo}/issues", { owner, repo: name, labels: 'good first issue' })
 
-    issues.data.forEach((issue) => {
-      db.get('issues').get(issue.node_id).put({
-        id: issue.node_id,
-        title: issue.title,
-        number: issue.number,
-        url: issue.html_url,
-        assignee: issue.assignee?.login || '',
-      })
-    })
-  })
+  const repo = {
+    id: githubRepo.data.node_id,
+    owner,
+    name,
+    description: githubRepo.data.description || '',
+    url: githubRepo.data.html_url,
+    language: githubRepo.data.language || '',
+    stars: githubRepo.data.stargazers_count,
+    lastSynced: new Date().getTime(),
+    issuesCount: githubIssues.data.length,
+    issuesJson: JSON.stringify(githubIssues.data.map((issue) => ({
+      id: issue.node_id,
+      number: issue.number,
+      title: issue.title,
+      url: issue.html_url,
+      assignee: issue.assignee?.login || '',
+      comments: issue.comments,
+    }))),
+  }
+
+  gun.get('repos').get(repo.id).put(repo);
 }
+
+gun.get('repos').map().on((repo: Repo) => {
+  if (reposWhitelist.includes(`${repo.owner}/${repo.name}`)) {
+    db.repos.put({
+      id: repo.id,
+      owner: repo.owner,
+      name: repo.name,
+      description: repo.description,
+      url: repo.url,
+      language: repo.language,
+      stars: repo.stars,
+      lastSynced: repo.lastSynced,
+      issuesCount: repo.issuesCount,
+      issuesJson: repo.issuesJson,
+    });
+  }
+})
