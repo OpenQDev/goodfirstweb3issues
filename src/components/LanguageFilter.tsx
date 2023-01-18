@@ -4,7 +4,7 @@ import LanguageFilterLanguage from "./LanguageFilterLanguage"
 export default function LanguageFilter() {
   const repos = useRepos()
 
-  const languages = repos.reduce((result, repo) => {
+  const languages = repos?.reduce((result, repo) => {
     if (repo.language) {
       if (result[repo.language]) {
         result[repo.language]++
@@ -13,7 +13,7 @@ export default function LanguageFilter() {
       }
     }
     return result
-  }, {} as { [language: string]: number })
+  }, {} as { [language: string]: number }) || {}
 
   return (
     <div className="flex flex-wrap mt-3 gap-2">
