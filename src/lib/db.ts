@@ -44,7 +44,7 @@ class Database extends Dexie {
 
   constructor() {
     super('database');
-    this.version(1).stores({
+    this.version(2).stores({
       repos: 'id,owner,name,issuesCount',
     });
   }

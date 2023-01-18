@@ -1,3 +1,5 @@
+import LanguageFilter from "./LanguageFilter";
+
 export default function TheSidebar() {
   return (
     <aside className="p-4 lg:max-w-sm">
@@ -5,17 +7,8 @@ export default function TheSidebar() {
       <p className="mt-2">
         This is a Web3 version of <a href="https://goodfirstissue.dev/" target="_blank" rel="noreferrer">goodfirstissue.dev</a>, with a focus on Web3 projects.
       </p>
-      <h3 className="mt-9">Popular languages</h3>
-      <div className="flex flex-wrap mt-3 gap-2">
-        {
-          ["JavaScript", "TypeScript", "Python", "Java", "C++", "C#", "PHP", "Ruby", "Go", "Rust"].map((lang) => (
-            <span key={ lang } className="bg-[#161b22] hover:bg-[#191e25] text-gray-300 px-2 py-1 rounded space-x-2 cursor-pointer text-sm">
-              <span>{ lang }</span>
-              <span className="text-gray-500">25</span>
-            </span>
-          ))
-        }
-      </div>
+      <h3 className="mt-9">languages</h3>
+      <LanguageFilter />
       <button className="w-full mt-10">
         Add Repository
       </button>
