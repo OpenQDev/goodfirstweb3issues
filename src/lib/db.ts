@@ -23,6 +23,7 @@ export interface Issue {
   url: string;
   assignee: string;
   comments: number;
+  labels: string[];
 }
 
 export interface Repo {
@@ -74,6 +75,7 @@ export async function syncRepoWithGithub(ownerAndRepo: string) {
       url: issue.html_url,
       assignee: issue.assignee?.login || '',
       comments: issue.comments,
+      labels: issue.labels,
     }))),
   }
 
