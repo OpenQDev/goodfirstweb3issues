@@ -9,8 +9,7 @@ import reposWhitelist from './reposWhitelist.json';
 
 const gun = new Gun({
   peers: [
-    'http://192.168.178.29:4200/gun',
-    'https://phorum-relay.mktcode.uber.space/gun'
+    'https://gun.mktcode.uber.space/gun'
   ],
   localStorage: false,
 })
